@@ -1,0 +1,3 @@
+jwt:
+    authentication:
+        failure: Bad credentials, please verify that your username/email and password are correctly set
