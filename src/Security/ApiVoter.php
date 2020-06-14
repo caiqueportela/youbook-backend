@@ -22,11 +22,11 @@ class ApiVoter extends Voter
         /** @var User $user */
         $user = $token->getUser();
 
-        if (in_array(self::ADMIN_ROLE, $user->getRolesName())) {
+        if (in_array(self::ADMIN_ROLE, $user->getRoles())) {
             return true;
         }
 
-        return in_array($attribute, $user->getRolesName());
+        return in_array($attribute, $user->getRoles());
     }
 
 }

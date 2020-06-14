@@ -5,10 +5,12 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Table(name="tb_user")
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @Serializer\ExclusionPolicy("all")
  */
 class User implements UserInterface
 {
@@ -18,24 +20,28 @@ class User implements UserInterface
      * @ORM\Column(name="user_id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Serializer\Expose()
      */
     private $userId;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=25, unique=true)
+     * @Serializer\Expose()
      */
     private $username;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=100, unique=true)
+     * @Serializer\Expose()
      */
     private $email;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
+     * @Serializer\Exclude()
      */
     private $password;
 
@@ -53,10 +59,10 @@ class User implements UserInterface
 
     /**
      * @var UserRole[]
-     * @ORM\ManyToMany(targetEntity="UserRole", )
+     * @ORM\ManyToMany(targetEntity="UserRole")
      * @ORM\JoinTable(name="tb_rel_user_role",
-     *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="user_id", unique=true)},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="role_id", unique=true)}
+     *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="user_id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="role_id")}
      * )
      */
     private $roles;
@@ -165,28 +171,37 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getSalt()
     {
         return null;
     }
 
+    /**
+     *
+     */
     public function eraseCredentials()
     {
     }
 
-    public function getRolesName()
+    /**
+     * @return array
+     */
+    public function getRoles(): array
     {
-        return array_map(function ($role) {
+        return array_map(function($role) {
             return $role->getName();
-        }, (array)$this->roles);
+        }, $this->roles->getValues());
     }
 
     /**
      * @return UserRole[]
      */
-    public function getRoles(): array
+    public function getUserRoles()
     {
-        return $this->roles;
+        return $this->roles->getValues();
     }
 
     /**
@@ -197,6 +212,10 @@ class User implements UserInterface
         $this->roles = $roles;
     }
 
+    /**
+     * @param UserRole $role
+     * @return $this
+     */
     public function addRole(UserRole $role): self
     {
         if (!$this->roles->contains($role)) {
@@ -206,6 +225,10 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * @param UserRole $role
+     * @return $this
+     */
     public function removeRole(UserRole $role): self
     {
         if ($this->roles->contains($role)) {

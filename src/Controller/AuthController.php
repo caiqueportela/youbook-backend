@@ -46,7 +46,7 @@ class AuthController extends ApiController
             $em->persist($user);
             $em->flush();
 
-            return $this->respondWithSuccess(sprintf('User %s successfully created', $user->getUsername()));
+            return $this->respondCreated(sprintf('User %s successfully created', $user->getUsername()));
         } catch (\Exception $exception) {
             return $this->setStatusCode(500)->respondWithErrors($exception->getMessage());
         }

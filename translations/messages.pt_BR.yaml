@@ -1,3 +1,7 @@
 jwt:
     authentication:
         failure: Credenciais inválidas! Por favor, verifique se seu usuário/e-mail e senha foram passados corretamente
+    api:
+        post:
+            create:
+                success: Postagem criada com sucesso!

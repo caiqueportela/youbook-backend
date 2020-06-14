@@ -1,3 +1,14 @@
 jwt:
     authentication:
         failure: Bad credentials, please verify that your username/email and password are correctly set
+api:
+    post:
+        create:
+            success: Post created with success!
+        get:
+            not_found: Post not found
+        delete:
+            user_not_owner: User is not owner of post informed
+            success: Post deleted with success!
+        updated:
+            success: Post updated with success!

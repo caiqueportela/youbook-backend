@@ -45,6 +45,8 @@ postgres-# CREATE DATABASE youbook WITH OWNER youbook;
 - composer require nelmio/cors-bundle
 - composer require symfony/validator doctrine/annotations
 - composer require symfony/translation
+- composer require symfony/monolog-bundle
+- composer require symfony/serializer-pack
 - composer require --dev doctrine/doctrine-fixtures-bundle
 - composer require --dev symfony/maker-bundle
 - Configurado no .env a conexão com o banco

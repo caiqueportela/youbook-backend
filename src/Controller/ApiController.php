@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 abstract class ApiController extends AbstractController
 {
@@ -28,10 +29,10 @@ abstract class ApiController extends AbstractController
         return new JsonResponse($data, $this->getStatusCode(), $headers);
     }
 
-    public function respondWithErrors($errors, $headers = [])
+    public function respondWithErrors($error, $headers = [])
     {
         $data = [
-            'message' => $errors,
+            'message' => $error,
         ];
 
         return new JsonResponse($data, $this->getStatusCode(), $headers);
@@ -44,6 +45,12 @@ abstract class ApiController extends AbstractController
         ];
 
         return new JsonResponse($data, $this->getStatusCode(), $headers);
+    }
+
+    public function respondSuccessWithData($data, $headers = [])
+    {
+        $headers['Content-Type'] = 'application/json';
+        return new Response($data, $this->getStatusCode(), $headers);
     }
 
     public function respondUnauthorized($message = 'Not authorized!')
@@ -61,8 +68,12 @@ abstract class ApiController extends AbstractController
         return $this->setStatusCode(404)->respondWithErrors($message);
     }
 
-    public function respondCreated($data = [])
+    public function respondCreated($message = "Created!")
     {
+        $data = [
+            'message' => $message,
+        ];
+
         return $this->setStatusCode(201)->response($data);
     }
 
