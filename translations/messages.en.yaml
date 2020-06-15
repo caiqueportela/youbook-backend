@@ -12,3 +12,13 @@ api:
             success: Post deleted with success!
         updated:
             success: Post updated with success!
+    comment:
+        create:
+            success: Comment created with success
+        get:
+            not_found: Comment not found
+        delete:
+            user_not_owner: User is not owner of comment informed
+            success: Comment deleted with success!
+        updated:
+            success: Comment updated with success!

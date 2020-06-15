@@ -54,8 +54,8 @@ class PostRepository extends ServiceEntityRepository
         return $qb->select('p')
             ->from(Post::class, 'p')
             ->where($qb->expr()->eq('p.deleted', 'false'))
-            ->andWhere($qb->expr()->eq('p.owner', ':userId'))
-            ->setParameter('userId', $postId)
+            ->andWhere($qb->expr()->eq('p.postId', ':postId'))
+            ->setParameter('postId', $postId)
             ->getQuery()
             ->getOneOrNullResult();
     }

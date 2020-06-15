@@ -2,14 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\PostAnswerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Table(name="tb_post_comment")
  * @ORM\Entity(repositoryClass="App\Repository\PostCommentRepository")
- * use JMS\Serializer\Annotation as Serializer;
  */
 class PostComment
 {
@@ -26,7 +24,7 @@ class PostComment
      * @ORM\ManyToOne(targetEntity=User::class)
      * @ORM\JoinColumn(name="owner_id", referencedColumnName="user_id", nullable=false)
      */
-    private $ownerId;
+    private $owner;
 
     /**
      * @var string
@@ -47,14 +45,23 @@ class PostComment
     private $updatedAt;
 
     /**
+     * @var bool
+     * @ORM\Column(type="boolean", nullable=false, options={"default": "false"})
+     * @Serializer\Exclude()
+     */
+    private $deleted;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Post", inversedBy="postComments")
      * @ORM\JoinColumn(name="post_id", referencedColumnName="post_id", nullable=false)
+     * @Serializer\Exclude()
      */
     private $post;
 
     public function __construct()
     {
         $this->createdAt = new \DateTime();
+        $this->deleted = false;
     }
 
     public function getPostCommentId(): ?int
@@ -69,14 +76,14 @@ class PostComment
         return $this;
     }
 
-    public function getOwnerId(): ?User
+    public function getOwner(): User
     {
-        return $this->ownerId;
+        return $this->owner;
     }
 
-    public function setOwnerId(?User $ownerId): self
+    public function setOwner(User $owner): self
     {
-        $this->ownerId = $ownerId;
+        $this->owner = $owner;
 
         return $this;
     }
@@ -115,6 +122,22 @@ class PostComment
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeleted(): bool
+    {
+        return $this->deleted;
+    }
+
+    /**
+     * @param bool $deleted
+     */
+    public function setDeleted(bool $deleted): void
+    {
+        $this->deleted = $deleted;
     }
 
     public function getPost(): ?Post

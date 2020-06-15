@@ -44,9 +44,7 @@ class PostController extends ApiController
 
             $this->postService->createPost($bodyData);
 
-            return $this->respondCreated([
-                'message' => $this->translator->trans('api.post.create.success')
-            ]);
+            return $this->respondCreated($this->translator->trans('api.post.create.success'));
         } catch(\Exception $exception) {
             return $this->setStatusCode(500)->respondWithErrors($exception->getMessage());
         }
@@ -55,7 +53,7 @@ class PostController extends ApiController
     /**
      * @Route("/api/posts", name="List posts", methods={"GET", "OPTIONS"})
      */
-    public function listPost(Request $request)
+    public function listPosts(Request $request)
     {
         try {
             $this->denyAccessUnlessGranted(ApiVoter::USER_ROLE);

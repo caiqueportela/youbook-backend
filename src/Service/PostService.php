@@ -48,7 +48,6 @@ class PostService
         $this->paginator->setQuery($posts);
 
         return $this->paginator->paginate();
-        //return $posts->getResult();
     }
 
     public function getPost($postId)

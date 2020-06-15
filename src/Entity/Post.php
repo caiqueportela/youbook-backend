@@ -49,13 +49,15 @@ class Post
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean", nullable=false)
+     * @ORM\Column(type="boolean", nullable=false, options={"default": "false"})
+     * @Serializer\Exclude()
      */
     private $deleted;
 
     /**
      * @var PostComment[]
      * @ORM\OneToMany(targetEntity="PostComment", mappedBy="post", orphanRemoval=true)
+     * @Serializer\Exclude()
      */
     private $postComments;
 
