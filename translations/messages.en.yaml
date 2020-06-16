@@ -22,3 +22,18 @@ api:
             success: Comment deleted with success!
         updated:
             success: Comment updated with success!
+    article:
+        create:
+            success: Article created with success!
+        get:
+            not_found: Article not found
+        delete:
+            success: Article deleted with success!
+            user_not_owner: User is not owner of article informed
+        updated:
+            success: Article updated with success!
+    subject:
+        create:
+            success: Subject created with success!
+        get:
+            not_found: Subject not found

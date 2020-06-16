@@ -2,25 +2,23 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
- * @ORM\Table(name="tb_post")
- * @ORM\Entity(repositoryClass="App\Repository\PostRepository")
+ * @ORM\Table(name="tb_article_comment")
+ * @ORM\Entity(repositoryClass="App\Repository\ArticleCommentRepository")
  */
-class Post
+class ArticleComment
 {
 
     /**
      * @var int
-     * @ORM\Id
+     * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(name="post_id", type="integer")
+     * @ORM\Column(name="article_comment_id", type="integer")
      */
-    private $postId;
+    private $articleCommentId;
 
     /**
      * @var User
@@ -49,35 +47,30 @@ class Post
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean", nullable=false, options={"default": "false"})
-     * @Serializer\Exclude()
+     * @ORM\Column(type="boolean", options={"default": "false"})
      */
     private $deleted;
 
     /**
-     * @var PostComment[]
-     * @ORM\OneToMany(targetEntity="PostComment", mappedBy="post", orphanRemoval=true)
+     * @var Article
+     * @ORM\ManyToOne(targetEntity="Article", inversedBy="articleComments")
+     * @ORM\JoinColumn(name="article_id", referencedColumnName="article_id", nullable=false)
      * @Serializer\Exclude()
      */
-    private $postComments;
+    private $article;
 
+    /**
+     * ArticleComment constructor.
+     */
     public function __construct()
     {
         $this->createdAt = new \DateTime();
-        $this->postComments = new ArrayCollection();
         $this->deleted = false;
     }
 
-    public function getPostId(): ?int
+    public function getArticleCommentId(): ?int
     {
-        return $this->postId;
-    }
-
-    public function setPostId(int $postId): self
-    {
-        $this->postId = $postId;
-
-        return $this;
+        return $this->articleCommentId;
     }
 
     public function getOwner(): ?User
@@ -128,50 +121,32 @@ class Post
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isDeleted(): bool
+    public function getDeleted(): ?bool
     {
         return $this->deleted;
     }
 
-    /**
-     * @param bool $deleted
-     */
-    public function setDeleted(bool $deleted): void
+    public function setDeleted(bool $deleted): self
     {
         $this->deleted = $deleted;
+
+        return $this;
     }
 
     /**
-     * @return Collection|PostComment[]
+     * @return Article
      */
-    public function getPostComments(): Collection
+    public function getArticle(): Article
     {
-        return $this->postComments;
+        return $this->article;
     }
 
-    public function addPostComment(PostComment $postComment): self
+    /**
+     * @param Article $article
+     */
+    public function setArticle(Article $article): void
     {
-        if (!$this->postComments->contains($postComment)) {
-            $this->postComments[] = $postComment;
-            $postComment->setPost($this);
-        }
-
-        return $this;
-    }
-
-    public function removePostComment(PostComment $postComment): self
-    {
-        if ($this->postComments->contains($postComment)) {
-            $this->postComments->removeElement($postComment);
-            if ($postComment->getPost() === $this) {
-                $postComment->setPost(null);
-            }
-        }
-
-        return $this;
+        $this->article = $article;
     }
 
 }

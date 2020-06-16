@@ -10,6 +10,7 @@ class ApiVoter extends Voter
 {
 
     const USER_ROLE = 'user';
+    const AUTHOR_ROLE = 'author';
     const ADMIN_ROLE = 'admin';
 
     protected function supports(string $attribute, $subject)

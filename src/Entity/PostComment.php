@@ -11,6 +11,7 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class PostComment
 {
+
     /**
      * @var int
      * @ORM\Id
@@ -52,6 +53,7 @@ class PostComment
     private $deleted;
 
     /**
+     * @var Post
      * @ORM\ManyToOne(targetEntity="Post", inversedBy="postComments")
      * @ORM\JoinColumn(name="post_id", referencedColumnName="post_id", nullable=false)
      * @Serializer\Exclude()
