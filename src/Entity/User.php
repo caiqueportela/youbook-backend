@@ -67,6 +67,12 @@ class User implements UserInterface
      */
     private $roles;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Address::class, cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="address_id", referencedColumnName="address_id")
+     */
+    private $address;
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
@@ -234,6 +240,18 @@ class User implements UserInterface
         if ($this->roles->contains($role)) {
             $this->roles->removeElement($role);
         }
+
+        return $this;
+    }
+
+    public function getAddress(): ?Address
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?Address $address): self
+    {
+        $this->address = $address;
 
         return $this;
     }
