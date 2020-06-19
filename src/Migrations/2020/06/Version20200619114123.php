@@ -34,7 +34,6 @@ final class Version20200619114123 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE SCHEMA youbook');
         $this->addSql('ALTER TABLE tb_donation DROP CONSTRAINT FK_94294BEDD5A53A7');
         $this->addSql('DROP INDEX IDX_94294BEDD5A53A7');
         $this->addSql('ALTER TABLE tb_donation RENAME COLUMN user_donor_id TO user_id');

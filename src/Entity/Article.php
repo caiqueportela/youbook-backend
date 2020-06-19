@@ -81,6 +81,13 @@ class Article
     private $articleComments;
 
     /**
+     * @var Group
+     * @ORM\ManyToOne(targetEntity=Group::class)
+     * @ORM\JoinColumn(name="group_id", referencedColumnName="group_id", nullable=false)
+     */
+    private $group;
+
+    /**
      * Article constructor.
      */
     public function __construct()
@@ -217,6 +224,18 @@ class Article
                 $articleComment->setArticle(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getGroup(): ?Group
+    {
+        return $this->group;
+    }
+
+    public function setGroup(?Group $group): self
+    {
+        $this->group = $group;
 
         return $this;
     }
