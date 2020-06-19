@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\GroupRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -33,9 +35,15 @@ class Group
      */
     private $activated;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Donation::class, mappedBy="group", orphanRemoval=true)
+     */
+    private $donations;
+
     public function __construct()
     {
         $this->activated = true;
+        $this->donations = new ArrayCollection();
     }
 
     public function getGroupId(): ?int
@@ -75,6 +83,37 @@ class Group
     public function setActivated(bool $activated): self
     {
         $this->activated = $activated;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Donation[]
+     */
+    public function getDonations(): Collection
+    {
+        return $this->donations;
+    }
+
+    public function addDonation(Donation $donation): self
+    {
+        if (!$this->donations->contains($donation)) {
+            $this->donations[] = $donation;
+            $donation->setGroup($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDonation(Donation $donation): self
+    {
+        if ($this->donations->contains($donation)) {
+            $this->donations->removeElement($donation);
+            // set the owning side to null (unless already changed)
+            if ($donation->getGroup() === $this) {
+                $donation->setGroup(null);
+            }
+        }
 
         return $this;
     }
