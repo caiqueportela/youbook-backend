@@ -34,7 +34,7 @@ class Subject
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean", options={"default": "true"})
+     * @ORM\Column(type="boolean", options={"default": true})
      * @Serializer\Exclude()
      */
     private $activated;

@@ -19,12 +19,12 @@ class Wallet
     private $walletId;
 
     /**
-     * @ORM\Column(type="boolean", options={"default": "true"})
+     * @ORM\Column(type="boolean", options={"default": true})
      */
     private $activated;
 
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=2, options={"default": "0.00"})
+     * @ORM\Column(type="decimal", precision=10, scale=2, options={"default": 0.00})
      */
     private $balance;
 

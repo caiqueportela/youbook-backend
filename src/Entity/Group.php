@@ -29,7 +29,7 @@ class Group
     private $description;
 
     /**
-     * @ORM\Column(type="boolean", options={"default": "true"})
+     * @ORM\Column(type="boolean", options={"default": true})
      */
     private $activated;
 

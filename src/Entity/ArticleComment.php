@@ -47,7 +47,7 @@ class ArticleComment
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean", options={"default": "false"})
+     * @ORM\Column(type="boolean", options={"default": false})
      */
     private $deleted;
 
