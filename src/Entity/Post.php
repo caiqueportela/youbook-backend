@@ -152,6 +152,10 @@ class Post
         return $this->postComments;
     }
 
+    /**
+     * @param PostComment $postComment
+     * @return $this
+     */
     public function addPostComment(PostComment $postComment): self
     {
         if (!$this->postComments->contains($postComment)) {
@@ -162,6 +166,10 @@ class Post
         return $this;
     }
 
+    /**
+     * @param PostComment $postComment
+     * @return $this
+     */
     public function removePostComment(PostComment $postComment): self
     {
         if ($this->postComments->contains($postComment)) {

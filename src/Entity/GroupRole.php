@@ -2,45 +2,35 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRoleRepository;
+use App\Repository\GroupRoleRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="tb_user_role")
- * @ORM\Entity(repositoryClass=UserRoleRepository::class)
+ * @ORM\Table(name="tb_group_role")
+ * @ORM\Entity(repositoryClass=GroupRoleRepository::class)
  */
-class UserRole
+class GroupRole
 {
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
-    private $userRoleId;
+    private $groupRoleId;
 
     /**
-     * @var string
      * @ORM\Column(type="string", length=20)
      */
     private $name;
 
     /**
-     * @var string
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $description;
 
-    public function getUserRoleId(): ?int
+    public function getGroupRoleId(): ?int
     {
-        return $this->userRoleId;
-    }
-
-    public function setUserRoleId(int $userRoleId): self
-    {
-        $this->userRoleId = $userRoleId;
-
-        return $this;
+        return $this->groupRoleId;
     }
 
     public function getName(): ?string
@@ -66,5 +56,4 @@ class UserRole
 
         return $this;
     }
-
 }

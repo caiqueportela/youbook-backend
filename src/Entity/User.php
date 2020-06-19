@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use JMS\Serializer\Annotation as Serializer;
@@ -62,7 +63,7 @@ class User implements UserInterface
      * @ORM\ManyToMany(targetEntity="UserRole")
      * @ORM\JoinTable(name="tb_rel_user_role",
      *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="user_id")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="role_id")}
+     *     inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="user_role_id")}
      * )
      */
     private $roles;
@@ -73,9 +74,16 @@ class User implements UserInterface
      */
     private $address;
 
+    /**
+     * @ORM\OneToMany(targetEntity=GroupUser::class, mappedBy="user", orphanRemoval=true)
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="user_id")
+     */
+    private $groupUser;
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
+        $this->groupUser = new ArrayCollection();
     }
 
     /**
@@ -203,11 +211,11 @@ class User implements UserInterface
     }
 
     /**
-     * @return UserRole[]
+     * @return Collection|UserRole[]
      */
-    public function getUserRoles()
+    public function getUserRoles(): Collection
     {
-        return $this->roles->getValues();
+        return $this->roles;
     }
 
     /**
@@ -252,6 +260,37 @@ class User implements UserInterface
     public function setAddress(?Address $address): self
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GroupUser[]
+     */
+    public function getGroupUser(): Collection
+    {
+        return $this->groupUser;
+    }
+
+    public function addGroupUser(GroupUser $groupUser): self
+    {
+        if (!$this->groupUser->contains($groupUser)) {
+            $this->groupUser[] = $groupUser;
+            $groupUser->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupUser(GroupUser $groupUser): self
+    {
+        if ($this->groupUser->contains($groupUser)) {
+            $this->groupUser->removeElement($groupUser);
+            // set the owning side to null (unless already changed)
+            if ($groupUser->getUser() === $this) {
+                $groupUser->setUser(null);
+            }
+        }
 
         return $this;
     }

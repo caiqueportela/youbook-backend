@@ -3,11 +3,13 @@
 namespace App\DataFixtures;
 
 use App\Entity\User;
+use App\Entity\UserRole;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class UserFixtures extends Fixture
+class UserFixtures extends Fixture implements FixtureGroupInterface
 {
 
     private $encoder;
@@ -24,9 +26,17 @@ class UserFixtures extends Fixture
         $user->setEmail('admin@youbook');
         $user->setPassword($this->encoder->encodePassword($user, '!23Mudar@'));
         $user->setLocale('pt_BR');
-        $manager->persist($user);
 
+        $adminRole = $manager->getRepository(UserRole::class)->findOneByName('admin');
+        $user->addRole($adminRole);
+
+        $manager->persist($user);
         $manager->flush();
+    }
+
+    public static function getGroups(): array
+    {
+        return ['data'];
     }
 
 }

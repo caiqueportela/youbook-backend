@@ -2,45 +2,45 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRoleRepository;
+use App\Repository\GroupRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="tb_user_role")
- * @ORM\Entity(repositoryClass=UserRoleRepository::class)
+ * @ORM\Table(name="tb_group")
+ * @ORM\Entity(repositoryClass=GroupRepository::class)
  */
-class UserRole
+class Group
 {
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
-    private $userRoleId;
+    private $groupId;
 
     /**
-     * @var string
-     * @ORM\Column(type="string", length=20)
+     * @ORM\Column(type="string", length=255)
      */
     private $name;
 
     /**
-     * @var string
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $description;
 
-    public function getUserRoleId(): ?int
+    /**
+     * @ORM\Column(type="boolean", options={"default": "true"})
+     */
+    private $activated;
+
+    public function __construct()
     {
-        return $this->userRoleId;
+        $this->activated = true;
     }
 
-    public function setUserRoleId(int $userRoleId): self
+    public function getGroupId(): ?int
     {
-        $this->userRoleId = $userRoleId;
-
-        return $this;
+        return $this->groupId;
     }
 
     public function getName(): ?string
@@ -63,6 +63,18 @@ class UserRole
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getActivated(): ?bool
+    {
+        return $this->activated;
+    }
+
+    public function setActivated(bool $activated): self
+    {
+        $this->activated = $activated;
 
         return $this;
     }
