@@ -27,7 +27,7 @@ class Donation
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(name="user_donor_id", referencedColumnName="user_id", nullable=false)
+     * @ORM\JoinColumn(name="donor_id", referencedColumnName="user_id", nullable=false)
      */
     private $donor;
 

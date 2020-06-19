@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CommentRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Table(name="tb_comment")
@@ -21,7 +22,7 @@ class Comment
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="user_id", nullable=false)
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="user_id", nullable=false)
      */
     private $owner;
 
@@ -42,6 +43,7 @@ class Comment
 
     /**
      * @ORM\Column(type="boolean", options={"default": false})
+     * @Serializer\Exclude()
      */
     private $deleted;
 

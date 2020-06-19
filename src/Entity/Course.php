@@ -29,7 +29,7 @@ class Course
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="user_id", nullable=false)
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="user_id", nullable=false)
      */
     private $owner;
 
