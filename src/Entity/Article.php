@@ -88,6 +88,15 @@ class Article
     private $group;
 
     /**
+     * @ORM\ManyToMany(targetEntity="Evaluation")
+     * @ORM\JoinTable(name="tb_rel_article_evaluation",
+     *      joinColumns={@ORM\JoinColumn(name="article_id", referencedColumnName="article_id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="evaluation_id", referencedColumnName="evaluation_id", unique=true)}
+     * )
+     */
+    private $evaluations;
+
+    /**
      * Article constructor.
      */
     public function __construct()
@@ -95,6 +104,7 @@ class Article
         $this->createdAt = new \DateTime();
         $this->articleComments = new ArrayCollection();
         $this->deleted = false;
+        $this->evaluations = new ArrayCollection();
     }
 
     public function getArticleId(): ?int
@@ -206,6 +216,10 @@ class Article
         return $this->articleComments;
     }
 
+    /**
+     * @param ArticleComment $articleComment
+     * @return $this
+     */
     public function addArticleComment(ArticleComment $articleComment): self
     {
         if (!$this->articleComments->contains($articleComment)) {
@@ -216,6 +230,10 @@ class Article
         return $this;
     }
 
+    /**
+     * @param ArticleComment $articleComment
+     * @return $this
+     */
     public function removeArticleComment(ArticleComment $articleComment): self
     {
         if ($this->articleComments->contains($articleComment)) {
@@ -236,6 +254,40 @@ class Article
     public function setGroup(?Group $group): self
     {
         $this->group = $group;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Evaluation[]
+     */
+    public function getEvaluations(): Collection
+    {
+        return $this->evaluations;
+    }
+
+    /**
+     * @param Evaluation $evaluation
+     * @return $this
+     */
+    public function addEvaluation(Evaluation $evaluation): self
+    {
+        if (!$this->evaluations->contains($evaluation)) {
+            $this->evaluations[] = $evaluation;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Evaluation $evaluation
+     * @return $this
+     */
+    public function removeEvaluation(Evaluation $evaluation): self
+    {
+        if ($this->evaluations->contains($evaluation)) {
+            $this->evaluations->removeElement($evaluation);
+        }
 
         return $this;
     }
