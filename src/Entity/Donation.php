@@ -27,9 +27,9 @@ class Donation
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="user_id", nullable=false)
+     * @ORM\JoinColumn(name="user_donor_id", referencedColumnName="user_id", nullable=false)
      */
-    private $user;
+    private $donor;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2)
@@ -63,14 +63,14 @@ class Donation
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getDonor(): ?User
     {
-        return $this->user;
+        return $this->donor;
     }
 
-    public function setUser(?User $user): self
+    public function setDonor(?User $donor): self
     {
-        $this->user = $user;
+        $this->donor = $donor;
 
         return $this;
     }
