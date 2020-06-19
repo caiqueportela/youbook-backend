@@ -55,17 +55,16 @@ class Post
     private $deleted;
 
     /**
-     * @var PostComment[]
-     * @ORM\OneToMany(targetEntity="PostComment", mappedBy="post", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="post", cascade={"persist"}, orphanRemoval=true)
      * @Serializer\Exclude()
      */
-    private $postComments;
+    private $comments;
 
     public function __construct()
     {
         $this->createdAt = new \DateTime();
-        $this->postComments = new ArrayCollection();
         $this->deleted = false;
+        $this->comments = new ArrayCollection();
     }
 
     public function getPostId(): ?int
@@ -145,37 +144,37 @@ class Post
     }
 
     /**
-     * @return Collection|PostComment[]
+     * @return Collection|Comment[]
      */
-    public function getPostComments(): Collection
+    public function getComments(): Collection
     {
-        return $this->postComments;
+        return $this->comments;
     }
 
     /**
-     * @param PostComment $postComment
+     * @param Comment $comment
      * @return $this
      */
-    public function addPostComment(PostComment $postComment): self
+    public function addComment(Comment $comment): self
     {
-        if (!$this->postComments->contains($postComment)) {
-            $this->postComments[] = $postComment;
-            $postComment->setPost($this);
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setPost($this);
         }
 
         return $this;
     }
 
     /**
-     * @param PostComment $postComment
+     * @param Comment $comment
      * @return $this
      */
-    public function removePostComment(PostComment $postComment): self
+    public function removeComment(Comment $comment): self
     {
-        if ($this->postComments->contains($postComment)) {
-            $this->postComments->removeElement($postComment);
-            if ($postComment->getPost() === $this) {
-                $postComment->setPost(null);
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            if ($comment->getPost() === $this) {
+                $comment->setPost(null);
             }
         }
 

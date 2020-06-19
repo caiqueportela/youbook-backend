@@ -74,13 +74,6 @@ class Article
     private $deleted;
 
     /**
-     * @var ArticleComment[]
-     * @ORM\OneToMany(targetEntity="ArticleComment", mappedBy="article", orphanRemoval=true)
-     * @Serializer\Exclude()
-     */
-    private $articleComments;
-
-    /**
      * @var Group
      * @ORM\ManyToOne(targetEntity=Group::class)
      * @ORM\JoinColumn(name="group_id", referencedColumnName="group_id", nullable=false)
@@ -93,8 +86,15 @@ class Article
      *      joinColumns={@ORM\JoinColumn(name="article_id", referencedColumnName="article_id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="evaluation_id", referencedColumnName="evaluation_id", unique=true)}
      * )
+     * @Serializer\Exclude()
      */
     private $evaluations;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="article", cascade={"persist"}, orphanRemoval=true)
+     * @Serializer\Exclude()
+     */
+    private $comments;
 
     /**
      * Article constructor.
@@ -102,9 +102,9 @@ class Article
     public function __construct()
     {
         $this->createdAt = new \DateTime();
-        $this->articleComments = new ArrayCollection();
         $this->deleted = false;
         $this->evaluations = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getArticleId(): ?int
@@ -208,44 +208,6 @@ class Article
         return $this;
     }
 
-    /**
-     * @return Collection|ArticleComment[]
-     */
-    public function getArticleComments(): Collection
-    {
-        return $this->articleComments;
-    }
-
-    /**
-     * @param ArticleComment $articleComment
-     * @return $this
-     */
-    public function addArticleComment(ArticleComment $articleComment): self
-    {
-        if (!$this->articleComments->contains($articleComment)) {
-            $this->articleComments[] = $articleComment;
-            $articleComment->setArticle($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ArticleComment $articleComment
-     * @return $this
-     */
-    public function removeArticleComment(ArticleComment $articleComment): self
-    {
-        if ($this->articleComments->contains($articleComment)) {
-            $this->articleComments->removeElement($articleComment);
-            if ($articleComment->getArticle() === $this) {
-                $articleComment->setArticle(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getGroup(): ?Group
     {
         return $this->group;
@@ -287,6 +249,44 @@ class Article
     {
         if ($this->evaluations->contains($evaluation)) {
             $this->evaluations->removeElement($evaluation);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param Comment $comment
+     * @return $this
+     */
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setArticle($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Comment $comment
+     * @return $this
+     */
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            if ($comment->getArticle() === $this) {
+                $comment->setArticle(null);
+            }
         }
 
         return $this;

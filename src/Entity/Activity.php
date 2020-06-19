@@ -6,6 +6,7 @@ use App\Repository\ActivityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Table(name="tb_course_activity")
@@ -53,11 +54,8 @@ class Activity
     private $chapter;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Comment")
-     * @ORM\JoinTable(name="tb_rel_activity_comment",
-     *      joinColumns={@ORM\JoinColumn(name="activity_id", referencedColumnName="activity_id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="comment_id", referencedColumnName="comment_id", unique=true)}
-     * )
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="activity", cascade={"persist"}, orphanRemoval=true)
+     * @Serializer\Exclude()
      */
     private $comments;
 
@@ -152,27 +150,23 @@ class Activity
         return $this->comments;
     }
 
-    /**
-     * @param Comment $comment
-     * @return $this
-     */
     public function addComment(Comment $comment): self
     {
         if (!$this->comments->contains($comment)) {
             $this->comments[] = $comment;
+            $comment->setActivity($this);
         }
 
         return $this;
     }
 
-    /**
-     * @param Comment $comment
-     * @return $this
-     */
     public function removeComment(Comment $comment): self
     {
         if ($this->comments->contains($comment)) {
             $this->comments->removeElement($comment);
+            if ($comment->getActivity() === $this) {
+                $comment->setActivity(null);
+            }
         }
 
         return $this;

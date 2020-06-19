@@ -6,6 +6,7 @@ use App\Repository\CourseRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Table(name="tb_course")
@@ -80,6 +81,7 @@ class Course
      *      joinColumns={@ORM\JoinColumn(name="course_id", referencedColumnName="course_id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="evaluation_id", referencedColumnName="evaluation_id", unique=true)}
      * )
+     * @Serializer\Exclude()
      */
     private $evaluations;
 

@@ -19,32 +19,59 @@ class CommentRepository extends ServiceEntityRepository
         parent::__construct($registry, Comment::class);
     }
 
-    // /**
-    //  * @return Comment[] Returns an array of Comment objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function persistComment(Comment $comment)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $em = $this->getEntityManager();
+        $em->persist($comment);
+        $em->flush();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Comment
+    public function findArticleCommentsToPagination($articleId)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $qb = $this->createQueryBuilder('findArticleCommentsToPagination');
+
+        return $qb->select('c')
+            ->from(Comment::class, 'c')
+            ->where($qb->expr()->eq('c.deleted', 'false'))
+            ->andWhere($qb->expr()->eq('c.article', ':articleId'))
+            ->setParameter('articleId', $articleId)
+            ->orderBy('c.createdAt', 'DESC')
+            ->getQuery();
     }
-    */
+
+    public function deleteComment(Comment $comment)
+    {
+        $em = $this->getEntityManager();
+        $comment->setUpdatedAt(new \DateTime());
+        $comment->setDeleted(true);
+        $em->persist($comment);
+        $em->flush();
+    }
+
+    public function findComment($commentId)
+    {
+        $qb = $this->createQueryBuilder('findComment');
+
+        return $qb->select('c')
+            ->from(Comment::class, 'c')
+            ->where($qb->expr()->eq('c.deleted', 'false'))
+            ->andWhere($qb->expr()->eq('c.commentId', ':commentId'))
+            ->setParameter('commentId', $commentId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findPostCommentsToPagination($postId)
+    {
+        $qb = $this->createQueryBuilder('findPostCommentsToPagination');
+
+        return $qb->select('c')
+            ->from(Comment::class, 'c')
+            ->where($qb->expr()->eq('c.deleted', 'false'))
+            ->andWhere($qb->expr()->eq('c.post', ':postId'))
+            ->setParameter('postId', $postId)
+            ->orderBy('c.createdAt', 'DESC')
+            ->getQuery();
+    }
+
 }

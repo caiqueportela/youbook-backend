@@ -2,10 +2,10 @@
 
 namespace App\Service;
 
+use App\Entity\Comment;
 use App\Entity\Post;
-use App\Entity\PostComment;
 use App\Entity\User;
-use App\Repository\PostCommentRepository;
+use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
 use App\Validator\Exception\PostNotFound;
 use App\Validator\Exception\UserIsNotCommentOwner;
@@ -20,8 +20,8 @@ class PostCommentService
     /** @var PostRepository */
     private $postRepository;
 
-    /** @var PostCommentRepository */
-    private $postCommentRepository;
+    /** @var CommentRepository */
+    private $commentRepository;
 
     /** @var YoubookPaginator */
     private $paginator;
@@ -29,12 +29,12 @@ class PostCommentService
     public function __construct(
         Security $security,
         PostRepository $postRepository,
-        PostCommentRepository $postCommentRepository,
+        CommentRepository $commentRepository,
         YoubookPaginator $paginator
     ) {
         $this->user = $security->getUser();
         $this->postRepository = $postRepository;
-        $this->postCommentRepository = $postCommentRepository;
+        $this->commentRepository = $commentRepository;
         $this->paginator = $paginator;
     }
 
@@ -42,11 +42,11 @@ class PostCommentService
     {
         $post = $this->findPostById($postId);
 
-        $comment = new PostComment();
+        $comment = new Comment();
         $comment->setMessage($data['message']);
         $comment->setOwner($this->user);
         $comment->setPost($post);
-        $this->postCommentRepository->persistComment($comment);
+        $this->commentRepository->persistComment($comment);
     }
 
     public function listComments($postId, int $page)
@@ -54,7 +54,7 @@ class PostCommentService
         /** @var Post $post */
         $post = $this->findPostById($postId);
 
-        $comments = $this->postCommentRepository->findPostCommentsToPagination($post->getPostId());
+        $comments = $this->commentRepository->findPostCommentsToPagination($post->getPostId());
 
         $this->paginator->setCurrentPage($page);
         $this->paginator->setQuery($comments);
@@ -75,32 +75,32 @@ class PostCommentService
 
     public function getComment($commentId)
     {
-        return $this->postCommentRepository->findComment($commentId);
+        return $this->commentRepository->findComment($commentId);
     }
 
-    public function deleteComment(PostComment $comment)
+    public function deleteComment(Comment $comment)
     {
         $this->validateCommentOwner($comment);
 
         $comment->setUpdatedAt(new \DateTime());
         $comment->setDeleted(true);
-        $this->postCommentRepository->persistComment($comment);
+        $this->commentRepository->persistComment($comment);
     }
 
-    private function validateCommentOwner(PostComment $comment)
+    private function validateCommentOwner(Comment $comment)
     {
         if ($comment->getOwner()->getUserId() !== $this->user->getUserId()) {
             throw new UserIsNotCommentOwner();
         }
     }
 
-    public function updateComment(PostComment $comment, $data)
+    public function updateComment(Comment $comment, $data)
     {
         $this->validateCommentOwner($comment);
 
         $comment->setMessage($data['message']);
         $comment->setUpdatedAt(new \DateTime());
-        $this->postCommentRepository->persistComment($comment);
+        $this->commentRepository->persistComment($comment);
     }
 
 }

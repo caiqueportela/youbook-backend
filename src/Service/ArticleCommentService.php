@@ -3,10 +3,10 @@
 namespace App\Service;
 
 use App\Entity\Article;
-use App\Entity\ArticleComment;
+use App\Entity\Comment;
 use App\Entity\User;
-use App\Repository\ArticleCommentRepository;
 use App\Repository\ArticleRepository;
+use App\Repository\CommentRepository;
 use App\Validator\Exception\ArticleNotFound;
 use App\Validator\Exception\UserIsNotCommentOwner;
 use Symfony\Component\Security\Core\Security;
@@ -20,8 +20,8 @@ class ArticleCommentService
     /** @var ArticleRepository */
     private $articleRepository;
 
-    /** @var ArticleCommentRepository */
-    private $articleCommentRepository;
+    /** @var CommentRepository */
+    private $commentRepository;
 
     /** @var YoubookPaginator */
     private $paginator;
@@ -29,12 +29,12 @@ class ArticleCommentService
     public function __construct(
         Security $security,
         ArticleRepository $articleRepository,
-        ArticleCommentRepository $articleCommentRepository,
+        CommentRepository $commentRepository,
         YoubookPaginator $paginator
     ) {
         $this->user = $security->getUser();
         $this->articleRepository = $articleRepository;
-        $this->articleCommentRepository = $articleCommentRepository;
+        $this->commentRepository = $commentRepository;
         $this->paginator = $paginator;
     }
 
@@ -42,11 +42,11 @@ class ArticleCommentService
     {
         $article = $this->findArticleById($articleId);
 
-        $comment = new ArticleComment();
+        $comment = new Comment();
         $comment->setMessage($data['message']);
         $comment->setOwner($this->user);
         $comment->setArticle($article);
-        $this->articleCommentRepository->persistComment($comment);
+        $this->commentRepository->persistComment($comment);
     }
 
     public function listComments($articleId, int $page)
@@ -54,7 +54,7 @@ class ArticleCommentService
         /** @var Article $article */
         $article = $this->findArticleById($articleId);
 
-        $comments = $this->articleCommentRepository->findArticleCommentsToPagination($article->getArticleId());
+        $comments = $this->commentRepository->findArticleCommentsToPagination($article->getArticleId());
 
         $this->paginator->setCurrentPage($page);
         $this->paginator->setQuery($comments);
@@ -64,25 +64,25 @@ class ArticleCommentService
 
     public function getComment($commentId)
     {
-        return $this->articleCommentRepository->findComment($commentId);
+        return $this->commentRepository->findComment($commentId);
     }
 
-    public function deleteComment(ArticleComment $comment)
+    public function deleteComment(Comment $comment)
     {
         $this->validateCommentOwner($comment);
 
         $comment->setUpdatedAt(new \DateTime());
         $comment->setDeleted(true);
-        $this->articleCommentRepository->persistComment($comment);
+        $this->commentRepository->persistComment($comment);
     }
 
-    public function updateComment(ArticleComment $comment, $data)
+    public function updateComment(Comment $comment, $data)
     {
         $this->validateCommentOwner($comment);
 
         $comment->setMessage($data['message']);
         $comment->setUpdatedAt(new \DateTime());
-        $this->articleCommentRepository->persistComment($comment);
+        $this->commentRepository->persistComment($comment);
     }
 
     private function findArticleById($articleId)
@@ -96,7 +96,7 @@ class ArticleCommentService
         return $article;
     }
 
-    private function validateCommentOwner(ArticleComment $comment)
+    private function validateCommentOwner(Comment $comment)
     {
         if ($comment->getOwner()->getUserId() !== $this->user->getUserId()) {
             throw new UserIsNotCommentOwner();
