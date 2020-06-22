@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class GroupRole
 {
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -56,4 +57,5 @@ class GroupRole
 
         return $this;
     }
+
 }
