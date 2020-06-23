@@ -75,7 +75,7 @@ class User implements UserInterface
     private $address;
 
     /**
-     * @ORM\OneToMany(targetEntity=GroupUser::class, mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=GroupUser::class, mappedBy="user", orphanRemoval=true, cascade={"persist"})
      * @ORM\JoinColumn(name="user_id", referencedColumnName="user_id")
      */
     private $groupUser;

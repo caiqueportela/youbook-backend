@@ -28,7 +28,7 @@ class GroupUser
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Group::class)
+     * @ORM\ManyToOne(targetEntity=Group::class, cascade={"persist"})
      * @ORM\JoinColumn(name="group_id", referencedColumnName="group_id", nullable=false)
      */
     private $group;

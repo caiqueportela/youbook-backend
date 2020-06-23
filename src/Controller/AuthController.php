@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Group;
+use App\Entity\GroupRole;
+use App\Entity\GroupUser;
 use App\Entity\User;
 use App\Entity\UserRole;
 use App\Security\ApiVoter;
@@ -42,6 +45,18 @@ class AuthController extends ApiController
 
             $roleUser = $em->getRepository(UserRole::class)->findOneByName(ApiVoter::USER_ROLE);
             $user->addRole($roleUser);
+
+            $group = new Group();
+            $group->setName($username);
+
+            $groupUser = new GroupUser();
+            $groupUser->setGroup($group);
+            $groupUser->setUser($user);
+
+            $roleGroupAdmin = $em->getRepository(GroupRole::class)->findOneByName(ApiVoter::GROUP_ADMIN_ROLE);
+            $groupUser->addRole($roleGroupAdmin);
+
+            $user->addGroupUser($groupUser);
 
             $em->persist($user);
             $em->flush();

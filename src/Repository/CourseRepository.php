@@ -14,37 +14,39 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CourseRepository extends ServiceEntityRepository
 {
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Course::class);
     }
 
-    // /**
-    //  * @return Course[] Returns an array of Course objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function persistCourse(Course $course)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $em = $this->getEntityManager();
+        $em->persist($course);
+        $em->flush();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Course
+    public function findCourse($courseId)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
+        $qb = $this->createQueryBuilder('findCourse');
+
+        return $qb->select('c')
+            ->from(Course::class, 'c')
+            ->where($qb->expr()->eq('c.deleted', 'false'))
+            ->andWhere($qb->expr()->eq('c.courseId', ':courseId'))
+            ->setParameter('courseId', $courseId)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult();
     }
-    */
+
+    public function deleteCourse(Course $course)
+    {
+        $em = $this->getEntityManager();
+        $course->setUpdatedAt(new \DateTime());
+        $course->setDeleted(true);
+        $em->persist($course);
+        $em->flush();
+    }
+
 }

@@ -6,6 +6,7 @@ use App\Repository\GroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Table(name="tb_group")
@@ -38,6 +39,7 @@ class Group
 
     /**
      * @ORM\OneToMany(targetEntity=Donation::class, mappedBy="group", orphanRemoval=true)
+     * @Serializer\Exclude()
      */
     private $donations;
 

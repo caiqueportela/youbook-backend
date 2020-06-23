@@ -77,14 +77,14 @@ class PostCommentController extends ApiController
     }
 
     /**
-     * @Route("/api/post/comment/{commentId}", name="Get comment", methods={"GET", "OPTIONS"})
+     * @Route("/api/post/{postId}/comment/{commentId}", name="Get comment", methods={"GET", "OPTIONS"})
      */
-    public function getComment($commentId, Request $request)
+    public function getComment($postId, $commentId, Request $request)
     {
         try {
             $this->denyAccessUnlessGranted(ApiVoter::USER_ROLE);
 
-            $comment = $this->postCommentService->getComment($commentId);
+            $comment = $this->postCommentService->getComment($postId, $commentId);
 
             if (is_null($comment)) {
                 return $this->respondNotFound($this->translator->trans('api.comment.get.not_found'));
@@ -102,14 +102,14 @@ class PostCommentController extends ApiController
     }
 
     /**
-     * @Route("/api/post/comment/{commentId}", name="Delete comment", methods={"DELETE", "OPTIONS"})
+     * @Route("/api/post/{postId}/comment/{commentId}", name="Delete comment", methods={"DELETE", "OPTIONS"})
      */
-    public function deleteComment($commentId, Request $request)
+    public function deleteComment($postId, $commentId, Request $request)
     {
         try {
             $this->denyAccessUnlessGranted(ApiVoter::USER_ROLE);
 
-            $comment = $this->postCommentService->getComment($commentId);
+            $comment = $this->postCommentService->getComment($postId, $commentId);
 
             if (is_null($comment)) {
                 return $this->respondNotFound($this->translator->trans('api.comment.get.not_found'));
@@ -126,14 +126,14 @@ class PostCommentController extends ApiController
     }
 
     /**
-     * @Route("/api/post/comment/{commentId}", name="Update a comment", methods={"PATCH", "OPTIONS"})
+     * @Route("/api/post/{postId}/comment/{commentId}", name="Update a comment", methods={"PATCH", "OPTIONS"})
      */
-    public function updateComment($commentId, Request $request)
+    public function updateComment($postId, $commentId, Request $request)
     {
         try {
             $this->denyAccessUnlessGranted(ApiVoter::USER_ROLE);
 
-            $comment = $this->postCommentService->getComment($commentId);
+            $comment = $this->postCommentService->getComment($postId, $commentId);
 
             if (is_null($comment)) {
                 return $this->respondNotFound($this->translator->trans('api.comment.get.not_found'));

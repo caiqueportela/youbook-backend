@@ -73,9 +73,9 @@ class PostCommentService
         return $post;
     }
 
-    public function getComment($commentId)
+    public function getComment($postId, $commentId)
     {
-        return $this->commentRepository->findComment($commentId);
+        return $this->commentRepository->findPostComment($postId, $commentId);
     }
 
     public function deleteComment(Comment $comment)

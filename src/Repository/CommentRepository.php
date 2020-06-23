@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Comment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use function Doctrine\ORM\QueryBuilder;
 
 /**
  * @method Comment|null find($id, $lockMode = null, $lockVersion = null)
@@ -48,15 +49,47 @@ class CommentRepository extends ServiceEntityRepository
         $em->flush();
     }
 
-    public function findComment($commentId)
+    public function findArticleComment($articleId, $commentId)
     {
-        $qb = $this->createQueryBuilder('findComment');
+        $qb = $this->createQueryBuilder('findArticleComment');
 
         return $qb->select('c')
             ->from(Comment::class, 'c')
             ->where($qb->expr()->eq('c.deleted', 'false'))
             ->andWhere($qb->expr()->eq('c.commentId', ':commentId'))
+            ->andWhere($qb->expr()->eq('c.article', ':articleId'))
             ->setParameter('commentId', $commentId)
+            ->setParameter('articleId', $articleId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findPostComment($postId, $commentId)
+    {
+        $qb = $this->createQueryBuilder('findPostComment');
+
+        return $qb->select('c')
+            ->from(Comment::class, 'c')
+            ->where($qb->expr()->eq('c.deleted', 'false'))
+            ->andWhere($qb->expr()->eq('c.commentId', ':commentId'))
+            ->andWhere($qb->expr()->eq('c.post', ':postId'))
+            ->setParameter('commentId', $commentId)
+            ->setParameter('postId', $postId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findActivityComment($activityId, $commentId)
+    {
+        $qb = $this->createQueryBuilder('findActivityComment');
+
+        return $qb->select('c')
+            ->from(Comment::class, 'c')
+            ->where($qb->expr()->eq('c.deleted', 'false'))
+            ->andWhere($qb->expr()->eq('c.commentId', ':commentId'))
+            ->andWhere($qb->expr()->eq('c.activity', ':activityId'))
+            ->setParameter('commentId', $commentId)
+            ->setParameter('activityId', $activityId)
             ->getQuery()
             ->getOneOrNullResult();
     }

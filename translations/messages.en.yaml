@@ -37,3 +37,12 @@ api:
             success: Subject created with success!
         get:
             not_found: Subject not found
+    course:
+        create:
+            success: Course created with success!
+        get:
+            not_found: Course not found
+        delete:
+            success: Course deleted with success!
+        updated:
+            success: Course updated with success!

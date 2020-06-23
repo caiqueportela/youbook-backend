@@ -13,6 +13,12 @@ class ApiVoter extends Voter
     const AUTHOR_ROLE = 'author';
     const ADMIN_ROLE = 'admin';
 
+    const GROUP_ADMIN_ROLE = 'admin';
+    const GROUP_ARTICLE_AUTHOR_ROLE = 'article_author';
+    const GROUP_COURSE_AUTHOR_ROLE = 'course_author';
+    const GROUP_ARTICLE_EDITOR_ROLE = 'article_editor';
+    const GROUP_COURSE_EDITOR_ROLE = 'course_editor';
+
     protected function supports(string $attribute, $subject)
     {
         return true;

@@ -47,6 +47,13 @@ class ArticleService
         $article->setSubtitle($data['subtitle']);
         $article->setContent($data['content']);
         $article->setSubject($subject);
+
+        $groupUser = $this->user->getGroupUser()->first();
+        if (!$groupUser) {
+            throw new \Exception('User need a group');
+        }
+        
+        $article->setGroup($groupUser->getGroup());
         $this->articleRepository->persistArticle($article);
     }
 

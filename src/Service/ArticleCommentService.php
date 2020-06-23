@@ -62,9 +62,9 @@ class ArticleCommentService
         return $this->paginator->paginate();
     }
 
-    public function getComment($commentId)
+    public function getComment($articleId, $commentId)
     {
-        return $this->commentRepository->findComment($commentId);
+        return $this->commentRepository->findArticleComment($articleId, $commentId);
     }
 
     public function deleteComment(Comment $comment)

@@ -5,3 +5,7 @@ jwt:
         post:
             create:
                 success: Postagem criada com sucesso!
+api:
+    course:
+        delete:
+            user_not_owner: 'messages'
