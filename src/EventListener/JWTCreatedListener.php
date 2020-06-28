@@ -38,6 +38,7 @@ class JWTCreatedListener
         $payload = $event->getData();
         $payload['ip'] = $request->getClientIp();
         $payload['email'] = $user->getEmail();
+        $payload['userId'] = $user->getUserId();
 
 //        $expiration = new \DateTime('+1 day');
 //        $expiration->setTime(2, 0, 0);

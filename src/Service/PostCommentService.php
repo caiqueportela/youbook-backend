@@ -47,9 +47,11 @@ class PostCommentService
         $comment->setOwner($this->user);
         $comment->setPost($post);
         $this->commentRepository->persistComment($comment);
+
+        return $comment;
     }
 
-    public function listComments($postId, int $page)
+    public function listComments($postId, int $page, int $items)
     {
         /** @var Post $post */
         $post = $this->findPostById($postId);
@@ -57,6 +59,7 @@ class PostCommentService
         $comments = $this->commentRepository->findPostCommentsToPagination($post->getPostId());
 
         $this->paginator->setCurrentPage($page);
+        $this->paginator->setItemsPerPage($items);
         $this->paginator->setQuery($comments);
 
         return $this->paginator->paginate();

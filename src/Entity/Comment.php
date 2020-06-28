@@ -51,21 +51,18 @@ class Comment
     /**
      * @ORM\ManyToOne(targetEntity=Article::class, inversedBy="comments")
      * @ORM\JoinColumn(name="article_id", referencedColumnName="article_id", nullable=true)
-     * @Serializer\Exclude()
      */
     private $article;
 
     /**
      * @ORM\ManyToOne(targetEntity=Activity::class, inversedBy="comments")
      * @ORM\JoinColumn(name="activity_id", referencedColumnName="activity_id", nullable=true)
-     * @Serializer\Exclude()
      */
     private $activity;
 
     /**
      * @ORM\ManyToOne(targetEntity=Post::class, inversedBy="comments")
      * @ORM\JoinColumn(name="post_id", referencedColumnName="post_id", nullable=true)
-     * @Serializer\Exclude()
      */
     private $post;
 

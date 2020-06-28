@@ -43,9 +43,12 @@ class PostCommentController extends ApiController
 
             $bodyData = json_decode($request->getContent(), true);
 
-            $this->postCommentService->createComment($postId, $bodyData);
+            $comment = $this->postCommentService->createComment($postId, $bodyData);
 
-            return $this->respondCreated($this->translator->trans('api.comment.create.success'));
+            return $this->setStatusCode(201)->response([
+                'message' => $this->translator->trans('api.comment.create.success'),
+                'commentId' => $comment->getCommentId(),
+            ]);
         } catch(PostNotFound $exception) {
             return $this->setStatusCode($exception->getCode())->respondWithErrors($this->translator->trans('api.post.get.not_found'));
         } catch(\Exception $exception) {
@@ -61,7 +64,7 @@ class PostCommentController extends ApiController
         try {
             $this->denyAccessUnlessGranted(ApiVoter::USER_ROLE);
 
-            $comments = $this->postCommentService->listComments($postId, $request->query->getInt('page', 1));
+            $comments = $this->postCommentService->listComments($postId, $request->query->getInt('page', 1), $request->query->getInt('items', 10));
 
             $serializedComments = $this->serializer->serialize(
                 $comments,
