@@ -6,7 +6,6 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
-use function Doctrine\ORM\QueryBuilder;
 
 class UserRepository extends ServiceEntityRepository implements UserLoaderInterface
 {
