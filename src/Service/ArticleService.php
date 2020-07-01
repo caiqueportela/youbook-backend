@@ -55,6 +55,8 @@ class ArticleService
         
         $article->setGroup($groupUser->getGroup());
         $this->articleRepository->persistArticle($article);
+
+        return $article;
     }
 
     private function findSubjectById($subjectId)

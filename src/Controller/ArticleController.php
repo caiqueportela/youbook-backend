@@ -43,9 +43,12 @@ class ArticleController extends ApiController
 
             $bodyData = json_decode($request->getContent(), true);
 
-            $this->articleService->createArticle($bodyData);
+            $article = $this->articleService->createArticle($bodyData);
 
-            return $this->respondCreated($this->translator->trans('api.article.create.success'));
+            return $this->setStatusCode(201)->response([
+                'message' => $this->translator->trans('api.article.create.success'),
+                'articleId' => $article->getArticleId(),
+            ]);
         } catch(SubjectNotFound $exception) {
             return $this->setStatusCode($exception->getCode())->respondWithErrors($this->translator->trans("api.subject.get.not_found"));
         } catch(\Exception $exception) {

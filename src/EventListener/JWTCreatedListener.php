@@ -3,6 +3,7 @@
 namespace App\EventListener;
 
 use App\Entity\User;
+use App\Security\ApiVoter;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -39,6 +40,7 @@ class JWTCreatedListener
         $payload['ip'] = $request->getClientIp();
         $payload['email'] = $user->getEmail();
         $payload['userId'] = $user->getUserId();
+        $payload['isAdmin'] = in_array(ApiVoter::ADMIN_ROLE, $user->getRoles());
 
 //        $expiration = new \DateTime('+1 day');
 //        $expiration->setTime(2, 0, 0);
