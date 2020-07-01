@@ -47,6 +47,8 @@ class ArticleCommentService
         $comment->setOwner($this->user);
         $comment->setArticle($article);
         $this->commentRepository->persistComment($comment);
+
+        return $comment;
     }
 
     public function listComments($articleId, int $page)

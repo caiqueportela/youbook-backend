@@ -43,9 +43,12 @@ class ArticleCommentController extends ApiController
 
             $bodyData = json_decode($request->getContent(), true);
 
-            $this->articleCommentService->createComment($articleId, $bodyData);
+            $comment = $this->articleCommentService->createComment($articleId, $bodyData);
 
-            return $this->respondCreated($this->translator->trans('api.comment.create.success'));
+            return $this->setStatusCode(201)->response([
+                'message' => $this->translator->trans('api.comment.create.success'),
+                'commentId' => $comment->getCommentId(),
+            ]);
         } catch(ArticleNotFound $exception) {
             return $this->setStatusCode($exception->getCode())->respondWithErrors($this->translator->trans('api.article.get.not_found'));
         } catch(\Exception $exception) {
