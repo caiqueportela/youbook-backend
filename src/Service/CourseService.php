@@ -3,11 +3,13 @@
 namespace App\Service;
 
 use App\Entity\Course;
+use App\Entity\Evaluation;
 use App\Entity\User;
 use App\Repository\CourseRepository;
 use App\Repository\SubjectRepository;
 use App\Validator\Exception\SubjectNotFound;
 use App\Validator\Exception\UserIsNotCourseOwner;
+use App\Validator\Exception\UserIsNotRegisteredInCourse;
 use Symfony\Component\Security\Core\Security;
 
 class CourseService
@@ -25,16 +27,21 @@ class CourseService
     /** @var YoubookPaginator */
     private $paginator;
 
+    /** @var CourseUserService */
+    private $courseUserService;
+
     public function __construct(
         Security $security,
         CourseRepository $courseRepository,
         SubjectRepository $subjectRepository,
-        YoubookPaginator $paginator
+        YoubookPaginator $paginator,
+        CourseUserService $courseUserService
     ) {
         $this->user = $security->getUser();
         $this->courseRepository = $courseRepository;
         $this->subjectRepository = $subjectRepository;
         $this->paginator = $paginator;
+        $this->courseUserService = $courseUserService;
     }
 
     public function createCourse($data)
@@ -111,6 +118,27 @@ class CourseService
         if ($course->getOwner()->getUserId() !== $this->user->getUserId()) {
             throw new UserIsNotCourseOwner();
         }
+    }
+
+    public function evaluateCourse(Course $course, $data)
+    {
+        if (!$this->courseUserService->isUserInCourse($course)) {
+            throw new UserIsNotRegisteredInCourse();
+        }
+
+        $evaluation = new Evaluation();
+        $evaluation->setUser($this->user);
+        $evaluation->setScore(intval($data['score'], 10));
+        $evaluation->setComment($data['comment']);
+
+        $course->addEvaluation($evaluation);
+
+        $this->courseRepository->persistCourse($course);
+    }
+
+    public function getCourseEvaluations(Course $course)
+    {
+        return $course->getEvaluations();
     }
 
 }

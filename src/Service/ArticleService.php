@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Article;
+use App\Entity\Evaluation;
 use App\Entity\User;
 use App\Repository\ArticleRepository;
 use App\Repository\SubjectRepository;
@@ -111,6 +112,23 @@ class ArticleService
         if ($article->getOwner()->getUserId() !== $this->user->getUserId()) {
             throw new UserIsNotArticleOwner();
         }
+    }
+
+    public function evaluateArticle(Article $article, $data)
+    {
+        $evaluation = new Evaluation();
+        $evaluation->setUser($this->user);
+        $evaluation->setScore(intval($data['score'], 10));
+        $evaluation->setComment($data['comment']);
+
+        $article->addEvaluation($evaluation);
+
+        $this->articleRepository->persistArticle($article);
+    }
+
+    public function getArticleEvaluations(Article $article)
+    {
+        return $article->getEvaluations();
     }
 
 }

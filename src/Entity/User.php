@@ -48,15 +48,15 @@ class User implements UserInterface
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default": true})
      */
-    private $activated = true;
+    private $activated;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=10)
+     * @ORM\Column(type="string", length=10, options={"default": "en"})
      */
-    private $locale = 'en';
+    private $locale;
 
     /**
      * @var UserRole[]
@@ -84,6 +84,8 @@ class User implements UserInterface
     {
         $this->roles = new ArrayCollection();
         $this->groupUser = new ArrayCollection();
+        $this->locale = 'en';
+        $this->activated = true;
     }
 
     /**

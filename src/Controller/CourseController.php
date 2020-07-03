@@ -6,6 +6,7 @@ use App\Security\ApiVoter;
 use App\Service\CourseService;
 use App\Validator\Exception\SubjectNotFound;
 use App\Validator\Exception\UserIsNotCourseOwner;
+use App\Validator\Exception\UserIsNotRegisteredInCourse;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -152,6 +153,60 @@ class CourseController extends ApiController
         } catch(UserIsNotCourseOwner $exception) {
             return $this->setStatusCode($exception->getCode())
                 ->respondWithErrors($this->translator->trans("api.course.user_not_owner"));
+        } catch(\Exception $exception) {
+            return $this->setStatusCode(500)->respondWithErrors($exception->getMessage());
+        }
+    }
+
+    /**
+     * @Route("/api/course/{courseId}/evaluate", name="Evaluate course", methods={"POST", "OPTIONS"})
+     */
+    public function evaluateCourse($courseId, Request $request)
+    {
+        try {
+            $this->denyAccessUnlessGranted(ApiVoter::USER_ROLE);
+
+            $course = $this->courseService->getCourse($courseId);
+
+            if (is_null($course)) {
+                return $this->respondNotFound($this->translator->trans('api.course.get.not_found'));
+            }
+
+            $bodyData = json_decode($request->getContent(), true);
+
+            $this->courseService->evaluateCourse($course, $bodyData);
+
+            return $this->respondWithSuccess($this->translator->trans('api.course.evaluate.success'));
+        } catch (UserIsNotRegisteredInCourse $exception) {
+            return $this->setStatusCode($exception->getCode())
+                ->respondWithErrors($this->translator->trans('api.user_course.user_not_registered'));
+        } catch(\Exception $exception) {
+            return $this->setStatusCode(500)->respondWithErrors($exception->getMessage());
+        }
+    }
+
+    /**
+     * @Route("/api/course/{courseId}/evaluations", name="List evaluations course", methods={"GET", "OPTIONS"})
+     */
+    public function listCourseEvaluations($courseId, Request $request)
+    {
+        try {
+            $this->denyAccessUnlessGranted(ApiVoter::USER_ROLE);
+
+            $course = $this->courseService->getCourse($courseId);
+
+            if (is_null($course)) {
+                return $this->respondNotFound($this->translator->trans('api.course.get.not_found'));
+            }
+
+            $evaluations = $this->courseService->getCourseEvaluations($course);
+
+            $serializedEvaluations = $this->serializer->serialize(
+                $evaluations,
+                'json'
+            );
+
+            return $this->respondSuccessWithData($serializedEvaluations);
         } catch(\Exception $exception) {
             return $this->setStatusCode(500)->respondWithErrors($exception->getMessage());
         }

@@ -152,4 +152,55 @@ class ArticleController extends ApiController
         }
     }
 
+    /**
+     * @Route("/api/article/{articleId}/evaluate", name="Evaluate article", methods={"POST", "OPTIONS"})
+     */
+    public function evaluateArticle($articleId, Request $request)
+    {
+        try {
+            $this->denyAccessUnlessGranted(ApiVoter::USER_ROLE);
+
+            $article = $this->articleService->getArticle($articleId);
+
+            if (is_null($article)) {
+                return $this->respondNotFound($this->translator->trans('api.article.get.not_found'));
+            }
+
+            $bodyData = json_decode($request->getContent(), true);
+
+            $this->articleService->evaluateArticle($article, $bodyData);
+
+            return $this->respondWithSuccess($this->translator->trans('api.article.evaluate.success'));
+        } catch(\Exception $exception) {
+            return $this->setStatusCode(500)->respondWithErrors($exception->getMessage());
+        }
+    }
+
+    /**
+     * @Route("/api/article/{articleId}/evaluations", name="List evaluations article", methods={"GET", "OPTIONS"})
+     */
+    public function listArticleEvaluations($articleId, Request $request)
+    {
+        try {
+            $this->denyAccessUnlessGranted(ApiVoter::USER_ROLE);
+
+            $article = $this->articleService->getArticle($articleId);
+
+            if (is_null($article)) {
+                return $this->respondNotFound($this->translator->trans('api.article.get.not_found'));
+            }
+
+            $evaluations = $this->articleService->getArticleEvaluations($article);
+
+            $serializedEvaluations = $this->serializer->serialize(
+                $evaluations,
+                'json'
+            );
+
+            return $this->respondSuccessWithData($serializedEvaluations);
+        } catch(\Exception $exception) {
+            return $this->setStatusCode(500)->respondWithErrors($exception->getMessage());
+        }
+    }
+
 }

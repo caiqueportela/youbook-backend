@@ -36,6 +36,11 @@ class CourseUserActivity
      */
     private $viewedAt;
 
+    public function __construct()
+    {
+        $this->viewedAt = new \DateTime();
+    }
+
     public function getCourseUserActivityId(): ?int
     {
         return $this->courseUserActivityId;

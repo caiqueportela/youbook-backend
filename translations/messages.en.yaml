@@ -32,6 +32,8 @@ api:
         update:
             success: Article updated with success!
         user_not_owner: User is not owner of article informed
+        evaluate:
+            success: Article evaluated with success!
     subject:
         create:
             success: Subject created with success!
@@ -47,6 +49,8 @@ api:
         update:
             success: Course updated with success!
         user_not_owner: User is not owner of course informed
+        evaluate:
+            success: Course evaluated with success!
     chapter:
         create:
             success: Chapter created with success!S
@@ -67,3 +71,11 @@ api:
             success: Activity updated with success!
     user_course:
         user_not_registered: User is not registered in course!
+        purchase:
+            success: Course purchased with success!
+            already_have: User already have the course
+        view:
+            success: Activity viewed
+        conclude:
+            success: Course concluate with success!
+            percentage_error: The minimum percentage to conclude not has been reached
