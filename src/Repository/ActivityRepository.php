@@ -14,37 +14,56 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ActivityRepository extends ServiceEntityRepository
 {
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Activity::class);
     }
 
-    // /**
-    //  * @return Activity[] Returns an array of Activity objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function persistActivity(Activity $activity)
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $em = $this->getEntityManager();
+        $em->persist($activity);
+        $em->flush();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Activity
+    public function findActivities($chapterId)
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $qb = $this->createQueryBuilder('findActivities');
+
+        $query = $qb->select('a')
+            ->from(Activity::class, 'a')
+            ->where($qb->expr()->eq('a.deleted', 'false'))
+            ->andWhere($qb->expr()->eq('a.chapter', ':chapterId'))
+            ->setParameter('chapter', $chapterId)
+            ->orderBy('c.createdAt', 'ASC');
+
+        return $query->getQuery()->getResult();
     }
-    */
+
+    public function findActivity($chapterId, $activityId)
+    {
+        $qb = $this->createQueryBuilder('findActivity');
+
+        $query = $qb->select('a')
+            ->from(Activity::class, 'a')
+            ->where($qb->expr()->eq('a.deleted', 'false'))
+            ->andWhere($qb->expr()->eq('a.chapter', ':chapterId'))
+            ->andWhere($qb->expr()->eq('a.activityId', ':activityId'))
+            ->setParameter('chapterId', $activityId)
+            ->setParameter('chapterId', $chapterId)
+            ->orderBy('c.createdAt', 'ASC');
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
+
+    public function deleteActivity(Activity $activity)
+    {
+        $em = $this->getEntityManager();
+        $activity->setUpdatedAt(new \DateTime());
+        $activity->setDeleted(true);
+        $em->persist($activity);
+        $em->flush();
+    }
+
 }

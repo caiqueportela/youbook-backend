@@ -8,20 +8,20 @@ api:
         get:
             not_found: Post not found
         delete:
-            user_not_owner: User is not owner of post informed
             success: Post deleted with success!
-        updated:
+        update:
             success: Post updated with success!
+        user_not_owner: User is not owner of post informed
     comment:
         create:
             success: Comment created with success
         get:
             not_found: Comment not found
         delete:
-            user_not_owner: User is not owner of comment informed
             success: Comment deleted with success!
-        updated:
+        update:
             success: Comment updated with success!
+        user_not_owner: User is not owner of comment informed
     article:
         create:
             success: Article created with success!
@@ -29,9 +29,9 @@ api:
             not_found: Article not found
         delete:
             success: Article deleted with success!
-            user_not_owner: User is not owner of article informed
-        updated:
+        update:
             success: Article updated with success!
+        user_not_owner: User is not owner of article informed
     subject:
         create:
             success: Subject created with success!
@@ -44,5 +44,26 @@ api:
             not_found: Course not found
         delete:
             success: Course deleted with success!
-        updated:
+        update:
             success: Course updated with success!
+        user_not_owner: User is not owner of course informed
+    chapter:
+        create:
+            success: Chapter created with success!S
+        get:
+            not_found: Chapter not found
+        delete:
+            success: Chapter deleted with success!
+        update:
+            success: Chapter updated with success!
+    activity:
+        create:
+            success: Activity created with success!
+        get:
+            not_found: Activity not found
+        delete:
+            success: Activity deleted with success!
+        update:
+            success: Activity updated with success!
+    user_course:
+        user_not_registered: User is not registered in course!

@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Course;
 use App\Entity\CourseUser;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,32 +21,19 @@ class CourseUserRepository extends ServiceEntityRepository
         parent::__construct($registry, CourseUser::class);
     }
 
-    // /**
-    //  * @return CourseUser[] Returns an array of CourseUser objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findUserInCourse(User $user, Course $course)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('findUserInCourse');
 
-    /*
-    public function findOneBySomeField($value): ?CourseUser
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $query = $qb->select('cu')
+            ->from(CourseUser::class, 'cu')
+            ->andWhere($qb->expr()->eq('cu.course', ':courseId'))
+            ->andWhere($qb->expr()->eq('cu.owner', ':userId'))
+            ->setParameter('courseId', $course->getCourseId())
+            ->setParameter('userId', $user->getUserId())
+            ->orderBy('c.createdAt', 'ASC');
+
+        return $query->getQuery()->getOneOrNullResult();
     }
-    */
+
 }

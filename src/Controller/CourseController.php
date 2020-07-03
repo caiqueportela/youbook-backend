@@ -39,13 +39,16 @@ class CourseController extends ApiController
     public function createCourse(Request $request)
     {
         try {
-            $this->denyAccessUnlessGranted(ApiVoter::USER_ROLE);
+            $this->denyAccessUnlessGranted(ApiVoter::AUTHOR_ROLE);
 
             $bodyData = json_decode($request->getContent(), true);
 
-            $this->courseService->createCourse($bodyData);
+            $course = $this->courseService->createCourse($bodyData);
 
-            return $this->respondCreated($this->translator->trans('api.course.create.success'));
+            return $this->setStatusCode(201)->response([
+                'message' => $this->translator->trans('api.course.create.success'),
+                'courseId' => $course->getCourseId(),
+            ]);
         } catch(SubjectNotFound $exception) {
             return $this->setStatusCode($exception->getCode())->respondWithErrors($this->translator->trans("api.subject.get.not_found"));
         } catch(\Exception $exception) {
@@ -88,7 +91,7 @@ class CourseController extends ApiController
             $course = $this->courseService->getCourse($courseId);
 
             if (is_null($course)) {
-                return $this->respondNotFound($this->translator->trans('api.article.get.not_found'));
+                return $this->respondNotFound($this->translator->trans('api.course.get.not_found'));
             }
 
             $serializedCourse = $this->serializer->serialize(
@@ -105,10 +108,10 @@ class CourseController extends ApiController
     /**
      * @Route("/api/course/{courseId}", name="Delete course", methods={"DELETE", "OPTIONS"})
      */
-    public function deleteArticle($courseId, Request $request)
+    public function deleteCourse($courseId, Request $request)
     {
         try {
-            $this->denyAccessUnlessGranted(ApiVoter::USER_ROLE);
+            $this->denyAccessUnlessGranted(ApiVoter::AUTHOR_ROLE);
 
             $course = $this->courseService->getCourse($courseId);
 
@@ -120,7 +123,8 @@ class CourseController extends ApiController
 
             return $this->respondWithSuccess($this->translator->trans('api.course.delete.success'));
         } catch(UserIsNotCourseOwner $exception) {
-            return $this->setStatusCode($exception->getCode())->respondWithErrors($this->translator->trans("api.course.delete.user_not_owner"));
+            return $this->setStatusCode($exception->getCode())
+                ->respondWithErrors($this->translator->trans("api.course.user_not_owner"));
         } catch(\Exception $exception) {
             return $this->setStatusCode(500)->respondWithErrors($exception->getMessage());
         }
@@ -129,10 +133,10 @@ class CourseController extends ApiController
     /**
      * @Route("/api/course/{courseId}", name="Update course", methods={"PATCH", "OPTIONS"})
      */
-    public function updateArticle($courseId, Request $request)
+    public function updateCourse($courseId, Request $request)
     {
         try {
-            $this->denyAccessUnlessGranted(ApiVoter::USER_ROLE);
+            $this->denyAccessUnlessGranted(ApiVoter::AUTHOR_ROLE);
 
             $course = $this->courseService->getCourse($courseId);
 
@@ -144,9 +148,10 @@ class CourseController extends ApiController
 
             $this->courseService->updateCourse($course, $bodyData);
 
-            return $this->respondWithSuccess($this->translator->trans('api.course.updated.success'));
+            return $this->respondWithSuccess($this->translator->trans('api.course.update.success'));
         } catch(UserIsNotCourseOwner $exception) {
-            return $this->setStatusCode($exception->getCode())->respondWithErrors($this->translator->trans("api.course.delete.user_not_owner"));
+            return $this->setStatusCode($exception->getCode())
+                ->respondWithErrors($this->translator->trans("api.course.user_not_owner"));
         } catch(\Exception $exception) {
             return $this->setStatusCode(500)->respondWithErrors($exception->getMessage());
         }

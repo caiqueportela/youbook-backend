@@ -114,7 +114,7 @@ class PostController extends ApiController
 
             return $this->respondWithSuccess($this->translator->trans('api.post.delete.success'));
         } catch(UserIsNotPostOwner $exception) {
-            return $this->setStatusCode($exception->getCode())->respondWithErrors($this->translator->trans("api.post.delete.user_not_owner"));
+            return $this->setStatusCode($exception->getCode())->respondWithErrors($this->translator->trans("api.post.user_not_owner"));
         } catch(\Exception $exception) {
             return $this->setStatusCode(500)->respondWithErrors($exception->getMessage());
         }
@@ -138,9 +138,9 @@ class PostController extends ApiController
 
             $this->postService->updatePost($post, $bodyData);
 
-            return $this->respondWithSuccess($this->translator->trans('api.post.updated.success'));
+            return $this->respondWithSuccess($this->translator->trans('api.post.update.success'));
         } catch(UserIsNotPostOwner $exception) {
-            return $this->setStatusCode($exception->getCode())->respondWithErrors($this->translator->trans("api.post.delete.user_not_owner"));
+            return $this->setStatusCode($exception->getCode())->respondWithErrors($this->translator->trans("api.post.user_not_owner"));
         } catch(\Exception $exception) {
             return $this->setStatusCode(500)->respondWithErrors($exception->getMessage());
         }

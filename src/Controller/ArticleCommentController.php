@@ -122,7 +122,7 @@ class ArticleCommentController extends ApiController
 
             return $this->respondWithSuccess($this->translator->trans('api.comment.delete.success'));
         } catch(UserIsNotCommentOwner $exception) {
-            return $this->setStatusCode($exception->getCode())->respondWithErrors($this->translator->trans("api.comment.delete.user_not_owner"));
+            return $this->setStatusCode($exception->getCode())->respondWithErrors($this->translator->trans("api.comment.user_not_owner"));
         } catch(\Exception $exception) {
             return $this->setStatusCode(500)->respondWithErrors($exception->getMessage());
         }
@@ -146,9 +146,9 @@ class ArticleCommentController extends ApiController
 
             $this->articleCommentService->updateComment($comment, $bodyData);
 
-            return $this->respondWithSuccess($this->translator->trans('api.comment.updated.success'));
+            return $this->respondWithSuccess($this->translator->trans('api.comment.update.success'));
         } catch(UserIsNotCommentOwner $exception) {
-            return $this->setStatusCode($exception->getCode())->respondWithErrors($this->translator->trans("api.comment.delete.user_not_owner"));
+            return $this->setStatusCode($exception->getCode())->respondWithErrors($this->translator->trans("api.comment.user_not_owner"));
         } catch(\Exception $exception) {
             return $this->setStatusCode(500)->respondWithErrors($exception->getMessage());
         }

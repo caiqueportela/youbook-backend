@@ -54,26 +54,4 @@ class SubjectRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function findCoursesToPagination(string $search = null)
-    {
-        $qb = $this->createQueryBuilder('findCoursesToPagination');
-
-        $search = strtolower($search);
-
-        $query = $qb->select('c')
-            ->from(Course::class, 'c')
-            ->where($qb->expr()->eq('c.deleted', 'false'))
-            ->orderBy('c.createdAt', 'DESC');
-
-        if ($search) {
-            $query->andWhere($query->expr()->orX([
-                $qb->expr()->like('LOWER(c.title)', $search),
-                $qb->expr()->like('LOWER(c.subtitle)', $search),
-                $qb->expr()->like('LOWER(c.description)', $search),
-            ]));
-        }
-
-        return $query->getQuery();
-    }
-
 }

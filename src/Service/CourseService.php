@@ -55,6 +55,8 @@ class CourseService
 
         $course->setGroup($groupUser->getGroup());
         $this->courseRepository->persistCourse($course);
+
+        return $course;
     }
 
     private function findSubjectById($subjectId)
@@ -70,7 +72,7 @@ class CourseService
 
     public function listCourses(int $page, string $search = null)
     {
-        $courses = $this->subjectRepository->findCoursesToPagination($search);
+        $courses = $this->courseRepository->findCoursesToPagination($search);
 
         $this->paginator->setCurrentPage($page);
         $this->paginator->setQuery($courses);
@@ -104,7 +106,7 @@ class CourseService
         $this->courseRepository->persistCourse($course);
     }
 
-    private function validateCourseOwner(Course $course)
+    public function validateCourseOwner(Course $course)
     {
         if ($course->getOwner()->getUserId() !== $this->user->getUserId()) {
             throw new UserIsNotCourseOwner();

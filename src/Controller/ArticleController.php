@@ -120,7 +120,7 @@ class ArticleController extends ApiController
 
             return $this->respondWithSuccess($this->translator->trans('api.article.delete.success'));
         } catch(UserIsNotArticleOwner $exception) {
-            return $this->setStatusCode($exception->getCode())->respondWithErrors($this->translator->trans("api.article.delete.user_not_owner"));
+            return $this->setStatusCode($exception->getCode())->respondWithErrors($this->translator->trans("api.article.user_not_owner"));
         } catch(\Exception $exception) {
             return $this->setStatusCode(500)->respondWithErrors($exception->getMessage());
         }
@@ -144,9 +144,9 @@ class ArticleController extends ApiController
 
             $this->articleService->updateArticle($article, $bodyData);
 
-            return $this->respondWithSuccess($this->translator->trans('api.article.updated.success'));
+            return $this->respondWithSuccess($this->translator->trans('api.article.update.success'));
         } catch(UserIsNotArticleOwner $exception) {
-            return $this->setStatusCode($exception->getCode())->respondWithErrors($this->translator->trans("api.article.delete.user_not_owner"));
+            return $this->setStatusCode($exception->getCode())->respondWithErrors($this->translator->trans("api.article.user_not_owner"));
         } catch(\Exception $exception) {
             return $this->setStatusCode(500)->respondWithErrors($exception->getMessage());
         }
