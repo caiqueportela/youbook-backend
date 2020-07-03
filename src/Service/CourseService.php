@@ -6,6 +6,7 @@ use App\Entity\Course;
 use App\Entity\Evaluation;
 use App\Entity\User;
 use App\Repository\CourseRepository;
+use App\Repository\CourseUserRepository;
 use App\Repository\SubjectRepository;
 use App\Validator\Exception\SubjectNotFound;
 use App\Validator\Exception\UserIsNotCourseOwner;
@@ -27,21 +28,21 @@ class CourseService
     /** @var YoubookPaginator */
     private $paginator;
 
-    /** @var CourseUserService */
-    private $courseUserService;
+    /** @var CourseUserRepository */
+    private $courseUserRepository;
 
     public function __construct(
         Security $security,
         CourseRepository $courseRepository,
         SubjectRepository $subjectRepository,
         YoubookPaginator $paginator,
-        CourseUserService $courseUserService
+        CourseUserRepository $courseUserRepository
     ) {
         $this->user = $security->getUser();
         $this->courseRepository = $courseRepository;
         $this->subjectRepository = $subjectRepository;
         $this->paginator = $paginator;
-        $this->courseUserService = $courseUserService;
+        $this->courseUserRepository = $courseUserRepository;
     }
 
     public function createCourse($data)
@@ -122,7 +123,7 @@ class CourseService
 
     public function evaluateCourse(Course $course, $data)
     {
-        if (!$this->courseUserService->isUserInCourse($course)) {
+        if (!$this->isUserInCourse($course)) {
             throw new UserIsNotRegisteredInCourse();
         }
 
@@ -139,6 +140,13 @@ class CourseService
     public function getCourseEvaluations(Course $course)
     {
         return $course->getEvaluations();
+    }
+
+    private function isUserInCourse(Course $course)
+    {
+        $courseUser = $this->courseUserRepository->findUserInCourse($this->user, $course);
+
+        return !is_null($courseUser);
     }
 
 }

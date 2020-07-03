@@ -7,6 +7,7 @@ use App\Entity\Course;
 use App\Entity\CourseUser;
 use App\Entity\CourseUserActivity;
 use App\Entity\User;
+use App\Repository\CourseRepository;
 use App\Repository\CourseUserRepository;
 use App\Validator\Exception\ActivityNotFound;
 use App\Validator\Exception\CourseNotFound;
@@ -29,29 +30,29 @@ class CourseUserService
     /** @var YoubookPaginator */
     private $paginator;
 
-    /** @var CourseService */
-    private $courseService;
-
     /** @var ActivityService */
     private $activityService;
 
     /** @var TranslatorInterface */
     private $translator;
 
+    /** @var CourseRepository */
+    private $courseRepository;
+
     public function __construct(
         Security $security,
         CourseUserRepository $courseUserRepository,
         YoubookPaginator $paginator,
-        CourseService $courseService,
         ActivityService $activityService,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        CourseRepository $courseRepository
     ) {
         $this->user = $security->getUser();
         $this->courseUserRepository = $courseUserRepository;
         $this->paginator = $paginator;
-        $this->courseService = $courseService;
         $this->activityService = $activityService;
         $this->translator = $translator;
+        $this->courseRepository = $courseRepository;
     }
 
     public function isUserInCourse(Course $course)
@@ -63,7 +64,7 @@ class CourseUserService
 
     public function userHasCourse($courseId)
     {
-        $course = $this->courseService->getCourse($courseId);
+        $course = $this->courseRepository->findCourse($courseId);
 
         if (is_null($course)) {
             throw new CourseNotFound();
@@ -76,7 +77,7 @@ class CourseUserService
 
     public function purchaseCourse($courseId)
     {
-        $course = $this->courseService->getCourse($courseId);
+        $course = $this->courseRepository->findCourse($courseId);
 
         if (is_null($course)) {
             throw new CourseNotFound();
@@ -105,7 +106,7 @@ class CourseUserService
 
     public function markActivityView($courseId, $activityId)
     {
-        $course = $this->courseService->getCourse($courseId);
+        $course = $this->courseRepository->findCourse($courseId);
 
         if (is_null($course)) {
             throw new CourseNotFound();
@@ -174,7 +175,7 @@ class CourseUserService
 
     public function concludeCourse($courseId)
     {
-        $course = $this->courseService->getCourse($courseId);
+        $course = $this->courseRepository->findCourse($courseId);
 
         if (is_null($course)) {
             throw new CourseNotFound();
