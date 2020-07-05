@@ -48,7 +48,6 @@ class ChapterRepository extends ServiceEntityRepository
 
         $query = $qb->select('c')
             ->from(Chapter::class, 'c')
-            ->where($qb->expr()->eq('c.deleted', 'false'))
             ->andWhere($qb->expr()->eq('c.course', ':courseId'))
             ->andWhere($qb->expr()->eq('c.chapterId', ':chapterId'))
             ->setParameter('courseId', $courseId)
@@ -61,9 +60,7 @@ class ChapterRepository extends ServiceEntityRepository
     public function deleteChapter(Chapter $chapter)
     {
         $em = $this->getEntityManager();
-        $chapter->setUpdatedAt(new \DateTime());
-        $chapter->setDeleted(true);
-        $em->persist($chapter);
+        $em->remove($chapter);
         $em->flush();
     }
 

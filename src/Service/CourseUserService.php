@@ -104,7 +104,7 @@ class CourseUserService
         return $this->paginator->paginate();
     }
 
-    public function markActivityView($courseId, $activityId)
+    public function markActivityView($courseId, $chapterId, $activityId)
     {
         $course = $this->courseRepository->findCourse($courseId);
 
@@ -116,7 +116,7 @@ class CourseUserService
             throw new UserIsNotRegisteredInCourse();
         }
 
-        $activity = $this->activityService->getActivity($activityId);
+        $activity = $this->activityService->getActivity($courseId, $chapterId, $activityId);
 
         if (is_null($activity)) {
             throw new ActivityNotFound();
@@ -134,6 +134,7 @@ class CourseUserService
             $this->calculateCoursePercentage($courseUser);
         }
 
+        return $courseUser;
     }
 
     private function userHasViewedActivity(CourseUser $courseUser, Activity $activity)

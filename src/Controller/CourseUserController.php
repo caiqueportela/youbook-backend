@@ -77,7 +77,7 @@ class CourseUserController extends ApiController
     }
 
     /**
-     * @Route("/api/course/purchased", name="List courses purchased", methods={"GET", "OPTIONS"})
+     * @Route("/api/courses/purchased", name="List courses purchased", methods={"GET", "OPTIONS"})
      */
     public function listCoursesPurchased(Request $request)
     {
@@ -86,7 +86,7 @@ class CourseUserController extends ApiController
 
             $courses = $this->courseUserService->listCoursePurchased(
                 $request->query->getInt('page', 1),
-                $request->query->get('search')
+                $request->query->get('search', '')
             );
 
             $serializedCourses = $this->serializer->serialize(
@@ -101,16 +101,19 @@ class CourseUserController extends ApiController
     }
 
     /**
-     * @Route("/api/course/{courseId}/activity/{activityId}/view", name="Mark activity view in corse", methods={"POST", "OPTIONS"})
+     * @Route("/api/course/{courseId}/chapter/{chapterId}/activity/{activityId}/view", name="Mark activity view in corse", methods={"POST", "OPTIONS"})
      */
-    public function markActivityView($courseId, $activityId, Request $request)
+    public function markActivityView($courseId, $chapterId, $activityId, Request $request)
     {
         try {
             $this->denyAccessUnlessGranted(ApiVoter::USER_ROLE);
 
-            $this->courseUserService->markActivityView($courseId, $activityId);
+            $courseUser = $this->courseUserService->markActivityView($courseId, $chapterId, $activityId);
 
-            return $this->respondWithSuccess($this->translator->trans('api.user_course.view.success'));
+            return $this->setStatusCode(200)->response([
+                'message' => $this->translator->trans('api.user_course.view.success'),
+                'percentage' => $courseUser->getPercentage(),
+            ]);
         } catch (CourseNotFound $exception) {
             return $this->setStatusCode($exception->getCode())
                 ->respondWithErrors($this->translator->trans('api.course.get.not_found'));
@@ -150,7 +153,5 @@ class CourseUserController extends ApiController
             return $this->setStatusCode($code)->respondWithErrors($exception->getMessage());
         }
     }
-
-    // Concluir curso (depende da porcentagem)
 
 }

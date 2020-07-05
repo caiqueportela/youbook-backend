@@ -49,7 +49,7 @@ class CourseUser
     private $concludedAt;
 
     /**
-     * @ORM\OneToMany(targetEntity=CourseUserActivity::class, mappedBy="courseUser", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=CourseUserActivity::class, cascade={"persist"}, mappedBy="courseUser", orphanRemoval=true)
      * @ORM\JoinColumn(name="course_user_activity_id", referencedColumnName="course_user_activity_id")
      */
     private $activities;

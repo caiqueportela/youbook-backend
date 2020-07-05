@@ -33,7 +33,7 @@ class CourseUserRepository extends ServiceEntityRepository
             ->andWhere($qb->expr()->eq('cu.owner', ':userId'))
             ->setParameter('courseId', $course->getCourseId())
             ->setParameter('userId', $user->getUserId())
-            ->orderBy('c.createdAt', 'ASC');
+            ->orderBy('cu.startedAt', 'DESC');
 
         return $query->getQuery()->getOneOrNullResult();
     }

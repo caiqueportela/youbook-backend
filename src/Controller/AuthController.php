@@ -2,12 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Group;
-use App\Entity\GroupRole;
-use App\Entity\GroupUser;
-use App\Entity\User;
-use App\Entity\UserRole;
-use App\Security\ApiVoter;
+use App\Service\UserService;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +12,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class AuthController extends ApiController
 {
+
+    /** @var UserService */
+    private $userService;
+
+    public function __construct(
+        UserService $userService
+    ) {
+        $this->userService = $userService;
+    }
 
     /**
      * @param Request $request
@@ -28,7 +32,6 @@ class AuthController extends ApiController
     public function register(Request $request, UserPasswordEncoderInterface $encoder)
     {
         try {
-            $em = $this->getDoctrine()->getManager();
             $request = $this->transformJsonBody($request);
             $username = $request->get('username');
             $password = $request->get('password');
@@ -38,28 +41,9 @@ class AuthController extends ApiController
                 return $this->respondValidationError("Invalid Username or Password or Email");
             }
 
-            $user = new User();
-            $user->setPassword($encoder->encodePassword($user, $password));
-            $user->setEmail($email);
-            $user->setUsername($username);
+            $role = $request->get('role');
 
-            $roleUser = $em->getRepository(UserRole::class)->findOneByName(ApiVoter::USER_ROLE);
-            $user->addRole($roleUser);
-
-            $group = new Group();
-            $group->setName($username);
-
-            $groupUser = new GroupUser();
-            $groupUser->setGroup($group);
-            $groupUser->setUser($user);
-
-            $roleGroupAdmin = $em->getRepository(GroupRole::class)->findOneByName(ApiVoter::GROUP_ADMIN_ROLE);
-            $groupUser->addRole($roleGroupAdmin);
-
-            $user->addGroupUser($groupUser);
-
-            $em->persist($user);
-            $em->flush();
+            $user = $this->userService->createUser($username, $password, $email, $role);
 
             return $this->respondCreated(sprintf('User %s successfully created', $user->getUsername()));
         } catch (\Exception $exception) {

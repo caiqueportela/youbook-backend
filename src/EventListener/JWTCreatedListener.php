@@ -41,6 +41,7 @@ class JWTCreatedListener
         $payload['email'] = $user->getEmail();
         $payload['userId'] = $user->getUserId();
         $payload['isAdmin'] = in_array(ApiVoter::ADMIN_ROLE, $user->getRoles());
+        $payload['isAuthor'] = in_array(ApiVoter::AUTHOR_ROLE, $user->getRoles());
 
 //        $expiration = new \DateTime('+1 day');
 //        $expiration->setTime(2, 0, 0);

@@ -43,7 +43,7 @@ class Activity
     private $updatedAt;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default": false})
      */
     private $deleted;
 
@@ -63,6 +63,7 @@ class Activity
     {
         $this->createdAt = new \DateTime();
         $this->comments = new ArrayCollection();
+        $this->deleted = false;
     }
 
     public function getActivityId(): ?int

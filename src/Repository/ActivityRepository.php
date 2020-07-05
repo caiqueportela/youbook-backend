@@ -35,8 +35,8 @@ class ActivityRepository extends ServiceEntityRepository
             ->from(Activity::class, 'a')
             ->where($qb->expr()->eq('a.deleted', 'false'))
             ->andWhere($qb->expr()->eq('a.chapter', ':chapterId'))
-            ->setParameter('chapter', $chapterId)
-            ->orderBy('c.createdAt', 'ASC');
+            ->setParameter('chapterId', $chapterId)
+            ->orderBy('a.createdAt', 'ASC');
 
         return $query->getQuery()->getResult();
     }
@@ -47,12 +47,11 @@ class ActivityRepository extends ServiceEntityRepository
 
         $query = $qb->select('a')
             ->from(Activity::class, 'a')
-            ->where($qb->expr()->eq('a.deleted', 'false'))
             ->andWhere($qb->expr()->eq('a.chapter', ':chapterId'))
             ->andWhere($qb->expr()->eq('a.activityId', ':activityId'))
-            ->setParameter('chapterId', $activityId)
+            ->setParameter('activityId', $activityId)
             ->setParameter('chapterId', $chapterId)
-            ->orderBy('c.createdAt', 'ASC');
+            ->orderBy('a.createdAt', 'ASC');
 
         return $query->getQuery()->getOneOrNullResult();
     }
@@ -60,9 +59,7 @@ class ActivityRepository extends ServiceEntityRepository
     public function deleteActivity(Activity $activity)
     {
         $em = $this->getEntityManager();
-        $activity->setUpdatedAt(new \DateTime());
-        $activity->setDeleted(true);
-        $em->persist($activity);
+        $em->remove($activity);
         $em->flush();
     }
 

@@ -30,4 +30,22 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
             ->getOneOrNullResult();
     }
 
+    public function findUsersToPagination()
+    {
+        $qb = $this->createQueryBuilder('findUsersToPagination');
+
+        return $qb->select('u')
+            ->from(User::class, 'u')
+            ->where($qb->expr()->eq('u.activated', 'true'))
+            ->orderBy('u.username', 'DESC')
+            ->getQuery();
+    }
+
+    public function persistUser(User $user)
+    {
+        $em = $this->getEntityManager();
+        $em->persist($user);
+        $em->flush();
+    }
+
 }

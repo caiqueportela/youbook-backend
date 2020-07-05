@@ -55,6 +55,7 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(type="string", length=10, options={"default": "en"})
+     * @Serializer\Expose()
      */
     private $locale;
 
@@ -65,18 +66,21 @@ class User implements UserInterface
      *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="user_id")},
      *     inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="user_role_id")}
      * )
+     * @Serializer\Expose()
      */
     private $roles;
 
     /**
      * @ORM\OneToOne(targetEntity=Address::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="address_id", referencedColumnName="address_id")
+     * @Serializer\Expose()
      */
     private $address;
 
     /**
      * @ORM\OneToMany(targetEntity=GroupUser::class, mappedBy="user", orphanRemoval=true, cascade={"persist"})
      * @ORM\JoinColumn(name="user_id", referencedColumnName="user_id")
+     * @Serializer\Expose()
      */
     private $groupUser;
 
